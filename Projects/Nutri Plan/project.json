@@ -1,0 +1,18 @@
+{
+  "title": "Nutri Plan",
+  "description": "A personalized nutrition planner with meal suggestions, daily nutrient tracking, health goals, progress charts, and community features — dark gold-green theme.",
+  "author": {
+    "name": "MistryVishwa",
+    "github": "MistryVishwa"
+  },
+  "tags": [
+    "nutrition",
+    "health",
+    "meal-planning",
+    "dashboard",
+    "dark-theme",
+    "localstorage"
+  ],
+  "entry": "index.html",
+  "thumbnail": "thumbnail.svg"
+}

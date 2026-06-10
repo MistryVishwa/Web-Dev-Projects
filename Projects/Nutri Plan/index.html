@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nutri Plan — Personalized Nutrition Planner</title>
+  <meta name="description" content="Nutri Plan — track meals, set health goals, monitor nutrient intake and share your nutrition journey with the community." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ────────────────────────── AUTH SCREEN ────────────────────────── -->
+<div id="auth-screen" class="auth-screen">
+  <div class="auth-bg">
+    <div class="auth-orb auth-orb-1"></div>
+    <div class="auth-orb auth-orb-2"></div>
+    <div class="auth-orb auth-orb-3"></div>
+  </div>
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="logo-leaf">
+        <i class="fa-solid fa-leaf"></i>
+      </div>
+      <div>
+        <span class="logo-nutri">Nutri</span><span class="logo-plan">Plan</span>
+        <p class="logo-tagline">Your Personalized Nutrition Journey</p>
+      </div>
+    </div>
+
+    <!-- TAB SWITCHER -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Sign Up</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <form id="login-form" class="auth-form" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label><i class="fa-solid fa-envelope"></i> Email</label>
+        <input type="email" id="login-email" placeholder="you@example.com" required />
+      </div>
+      <div class="form-group">
+        <label><i class="fa-solid fa-lock"></i> Password</label>
+        <div class="input-with-icon">
+          <input type="password" id="login-password" placeholder="Your password" required />
+          <button type="button" class="toggle-pwd" onclick="togglePwd('login-password', this)"><i class="fa-solid fa-eye"></i></button>
+        </div>
+      </div>
+      <div id="login-error" class="auth-error"></div>
+      <button type="submit" class="btn-primary btn-full">
+        <i class="fa-solid fa-right-to-bracket"></i> Sign In
+      </button>
+      <p class="auth-hint">Demo: <strong>admin@nutri.com</strong> / <strong>admin123</strong></p>
+    </form>
+
+    <!-- REGISTER FORM -->
+    <form id="register-form" class="auth-form hidden" onsubmit="handleRegister(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label><i class="fa-solid fa-user"></i> First Name</label>
+          <input type="text" id="reg-fname" placeholder="Alex" required />
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" id="reg-lname" placeholder="Smith" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label><i class="fa-solid fa-envelope"></i> Email</label>
+        <input type="email" id="reg-email" placeholder="you@example.com" required />
+      </div>
+      <div class="form-group">
+        <label><i class="fa-solid fa-lock"></i> Password</label>
+        <div class="input-with-icon">
+          <input type="password" id="reg-password" placeholder="Min. 6 characters" minlength="6" required />
+          <button type="button" class="toggle-pwd" onclick="togglePwd('reg-password', this)"><i class="fa-solid fa-eye"></i></button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label><i class="fa-solid fa-bullseye"></i> Health Goal</label>
+        <select id="reg-goal">
+          <option value="weight-loss">🔥 Weight Loss</option>
+          <option value="muscle-gain">💪 Muscle Gain</option>
+          <option value="maintenance">⚖️ Maintenance</option>
+          <option value="endurance">🏃 Endurance</option>
+        </select>
+      </div>
+      <div id="register-error" class="auth-error"></div>
+      <button type="submit" class="btn-primary btn-full">
+        <i class="fa-solid fa-user-plus"></i> Create Account
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ──────────────────────────── MAIN APP ─────────────────────────── -->
+<div id="main-app" class="main-app hidden">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-icon"><i class="fa-solid fa-leaf"></i></div>
+      <div class="logo-text">
+        <span class="logo-nutri">Nutri</span><span class="logo-plan">Plan</span>
+      </div>
+      <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+
+    <div class="user-pill" id="sidebar-user">
+      <div class="user-avatar" id="nav-avatar">U</div>
+      <div class="user-info" id="nav-user-info">
+        <strong id="nav-user-name">User</strong>
+        <span id="nav-user-goal">Goal</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-page="dashboard" onclick="navigateTo('dashboard')">
+        <i class="fa-solid fa-house"></i><span>Dashboard</span>
+      </a>
+      <a href="#" class="nav-item" data-page="meal-plan" onclick="navigateTo('meal-plan')">
+        <i class="fa-solid fa-utensils"></i><span>Meal Plan</span>
+      </a>
+      <a href="#" class="nav-item" data-page="food-log" onclick="navigateTo('food-log')">
+        <i class="fa-solid fa-clipboard-list"></i><span>Food Log</span>
+      </a>
+      <a href="#" class="nav-item" data-page="progress" onclick="navigateTo('progress')">
+        <i class="fa-solid fa-chart-line"></i><span>Progress</span>
+      </a>
+      <a href="#" class="nav-item" data-page="community" onclick="navigateTo('community')">
+        <i class="fa-solid fa-users"></i><span>Community</span>
+      </a>
+      <a href="#" class="nav-item" data-page="profile" onclick="navigateTo('profile')">
+        <i class="fa-solid fa-user-gear"></i><span>Profile</span>
+      </a>
+      <a href="#" class="nav-item" data-page="admin" id="admin-nav" style="display:none" onclick="navigateTo('admin')">
+        <i class="fa-solid fa-shield-halved"></i><span>Admin</span>
+      </a>
+    </nav>
+
+    <button class="sidebar-logout" onclick="handleLogout()">
+      <i class="fa-solid fa-right-from-bracket"></i><span>Sign Out</span>
+    </button>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="content-area" id="content-area">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+        <h1 class="page-title" id="page-title">Dashboard</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="water-tracker">
+          <i class="fa-solid fa-droplet" style="color:#4A90E2"></i>
+          <span id="water-count">0</span>/8
+          <button onclick="addWater()" class="btn-icon" title="Add glass of water"><i class="fa-solid fa-plus"></i></button>
+        </div>
+        <div class="streak-badge">
+          <i class="fa-solid fa-fire"></i>
+          <span id="streak-count">0</span>d
+        </div>
+        <div class="notification-bell" title="No new notifications">
+          <i class="fa-solid fa-bell"></i>
+        </div>
+        <div class="topbar-avatar" id="topbar-avatar" onclick="navigateTo('profile')">U</div>
+      </div>
+    </header>
+
+    <!-- ════════════ DASHBOARD ════════════ -->
+    <section class="page active" id="page-dashboard">
+      <div class="welcome-banner" id="welcome-banner">
+        <div>
+          <h2 id="welcome-text">Good morning, User! 🌅</h2>
+          <p id="goal-text">Your goal: <strong>Weight Loss</strong> — Stay consistent today!</p>
+        </div>
+        <div class="banner-kcal">
+          <span id="banner-kcal-consumed">0</span>
+          <small>/ <span id="banner-kcal-goal">2000</span> kcal</small>
+        </div>
+      </div>
+
+      <!-- MACRO CARDS -->
+      <div class="macro-grid" id="macro-cards"></div>
+
+      <!-- DONUT + TODAY MEALS -->
+      <div class="dashboard-split">
+        <div class="card card-donut">
+          <h3 class="card-title"><i class="fa-solid fa-circle-half-stroke"></i> Today's Macros</h3>
+          <div class="donut-wrapper">
+            <canvas id="macroChart" width="220" height="220"></canvas>
+            <div class="donut-center">
+              <span id="donut-kcal">0</span>
+              <small>kcal</small>
+            </div>
+          </div>
+          <div class="macro-legend" id="macro-legend"></div>
+        </div>
+
+        <div class="card card-meals-today">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fa-solid fa-bowl-food"></i> Today's Meals</h3>
+            <button class="btn-sm" onclick="navigateTo('meal-plan')">View Plan</button>
+          </div>
+          <div class="today-meals-list" id="today-meals-list"></div>
+        </div>
+      </div>
+
+      <!-- QUICK STATS -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <i class="fa-solid fa-weight-scale stat-icon gold"></i>
+          <div>
+            <div class="stat-val" id="stat-weight">—</div>
+            <div class="stat-label">Weight (kg)</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <i class="fa-solid fa-ruler-vertical stat-icon green"></i>
+          <div>
+            <div class="stat-val" id="stat-bmi">—</div>
+            <div class="stat-label">BMI</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <i class="fa-solid fa-droplet stat-icon blue"></i>
+          <div>
+            <div class="stat-val" id="stat-water">0/8</div>
+            <div class="stat-label">Water Intake</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <i class="fa-solid fa-fire stat-icon orange"></i>
+          <div>
+            <div class="stat-val" id="stat-streak">0</div>
+            <div class="stat-label">Day Streak</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════ MEAL PLAN ════════════ -->
+    <section class="page" id="page-meal-plan">
+      <div class="page-header">
+        <div>
+          <p class="page-sub">Personalized meal suggestions based on your goals & preferences</p>
+        </div>
+        <div class="filter-group">
+          <select id="meal-diet-filter" onchange="renderMealPlan()" class="filter-select">
+            <option value="all">All Diets</option>
+            <option value="vegan">Vegan</option>
+            <option value="vegetarian">Vegetarian</option>
+            <option value="keto">Keto</option>
+            <option value="high-protein">High Protein</option>
+          </select>
+          <button class="btn-primary" onclick="regenerateMeals()">
+            <i class="fa-solid fa-rotate"></i> Regenerate
+          </button>
+        </div>
+      </div>
+
+      <div class="meal-slots" id="meal-slots"></div>
+
+      <div class="nutrition-summary card">
+        <h3 class="card-title"><i class="fa-solid fa-calculator"></i> Daily Nutrition Summary</h3>
+        <div class="nutrition-bars" id="nutrition-bars"></div>
+      </div>
+    </section>
+
+    <!-- ════════════ FOOD LOG ════════════ -->
+    <section class="page" id="page-food-log">
+      <div class="page-header">
+        <p class="page-sub">Log what you've eaten and track your nutrient intake</p>
+        <button class="btn-primary" onclick="openFoodModal()">
+          <i class="fa-solid fa-plus"></i> Log Food
+        </button>
+      </div>
+
+      <div class="food-log-grid">
+        <div>
+          <div class="log-date-nav">
+            <button class="btn-icon" onclick="changeLogDate(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <span id="log-date-display" class="log-date-text">Today</span>
+            <button class="btn-icon" onclick="changeLogDate(1)"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+          <div class="meal-type-tabs">
+            <button class="meal-tab active" onclick="switchMealTab('breakfast', this)">🌅 Breakfast</button>
+            <button class="meal-tab" onclick="switchMealTab('lunch', this)">☀️ Lunch</button>
+            <button class="meal-tab" onclick="switchMealTab('dinner', this)">🌙 Dinner</button>
+            <button class="meal-tab" onclick="switchMealTab('snack', this)">🍎 Snacks</button>
+          </div>
+          <div class="log-entries" id="log-entries"></div>
+        </div>
+
+        <div class="card daily-totals">
+          <h3 class="card-title"><i class="fa-solid fa-fire-flame-curved"></i> Daily Totals</h3>
+          <div class="totals-list" id="daily-totals-list"></div>
+          <canvas id="logMacroChart" height="180"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════ PROGRESS ════════════ -->
+    <section class="page" id="page-progress">
+      <div class="page-header">
+        <p class="page-sub">Track your nutrition trends and body metrics over time</p>
+        <div class="filter-group">
+          <select id="progress-period" onchange="renderProgress()" class="filter-select">
+            <option value="7">Last 7 days</option>
+            <option value="14">Last 14 days</option>
+            <option value="30">Last 30 days</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="progress-grid">
+        <div class="card">
+          <h3 class="card-title"><i class="fa-solid fa-fire"></i> Calorie Trend</h3>
+          <canvas id="calorieTrendChart" height="200"></canvas>
+        </div>
+        <div class="card">
+          <h3 class="card-title"><i class="fa-solid fa-weight-scale"></i> Weight Trend</h3>
+          <canvas id="weightTrendChart" height="200"></canvas>
+        </div>
+        <div class="card">
+          <h3 class="card-title"><i class="fa-solid fa-chart-pie"></i> Weekly Macros</h3>
+          <canvas id="weeklyMacroChart" height="200"></canvas>
+        </div>
+        <div class="card">
+          <h3 class="card-title"><i class="fa-solid fa-droplet"></i> Water Intake</h3>
+          <canvas id="waterTrendChart" height="200"></canvas>
+        </div>
+      </div>
+
+      <!-- LOG WEIGHT -->
+      <div class="card weight-log-card">
+        <h3 class="card-title"><i class="fa-solid fa-dumbbell"></i> Log Body Metrics</h3>
+        <form class="inline-form" onsubmit="logBodyMetric(event)">
+          <div class="form-group">
+            <label>Weight (kg)</label>
+            <input type="number" id="metric-weight" step="0.1" min="30" max="300" placeholder="75.5" />
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="metric-date" />
+          </div>
+          <button type="submit" class="btn-primary">
+            <i class="fa-solid fa-save"></i> Save Metric
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ════════════ COMMUNITY ════════════ -->
+    <section class="page" id="page-community">
+      <div class="page-header">
+        <p class="page-sub">Share meal plans, discover recipes, and support each other</p>
+        <button class="btn-primary" onclick="openPostModal()">
+          <i class="fa-solid fa-paper-plane"></i> Share a Plan
+        </button>
+      </div>
+
+      <div class="community-layout">
+        <div class="posts-feed" id="posts-feed"></div>
+        <aside class="community-sidebar">
+          <div class="card trending-card">
+            <h3 class="card-title"><i class="fa-solid fa-fire"></i> Trending Tags</h3>
+            <div class="tag-cloud" id="tag-cloud"></div>
+          </div>
+          <div class="card tips-card">
+            <h3 class="card-title"><i class="fa-solid fa-lightbulb"></i> Nutrition Tip</h3>
+            <p class="tip-text" id="daily-tip"></p>
+          </div>
+          <div class="card leaderboard-card">
+            <h3 class="card-title"><i class="fa-solid fa-trophy"></i> Top Streaks</h3>
+            <ul class="leaderboard-list" id="leaderboard-list"></ul>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ════════════ PROFILE ════════════ -->
+    <section class="page" id="page-profile">
+      <div class="profile-layout">
+        <!-- LEFT PANEL -->
+        <div class="profile-left">
+          <div class="card profile-card">
+            <div class="profile-avatar-big" id="profile-avatar-big">U</div>
+            <h2 class="profile-name" id="profile-name-display">User</h2>
+            <p class="profile-email" id="profile-email-display">user@example.com</p>
+            <div class="profile-badge" id="profile-goal-badge">Goal</div>
+            <p class="profile-joined">Member since <span id="profile-joined">today</span></p>
+          </div>
+          <div class="card allergy-card">
+            <h3 class="card-title"><i class="fa-solid fa-triangle-exclamation"></i> Food Allergies</h3>
+            <div class="allergy-tags" id="allergy-tags"></div>
+            <div class="add-allergy">
+              <input type="text" id="allergy-input" placeholder="e.g. Peanuts, Dairy..." />
+              <button class="btn-sm" onclick="addAllergy()"><i class="fa-solid fa-plus"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="profile-right">
+          <div class="card">
+            <h3 class="card-title"><i class="fa-solid fa-user-pen"></i> Personal Details</h3>
+            <form class="profile-form" onsubmit="saveProfile(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>First Name</label>
+                  <input type="text" id="pf-fname" />
+                </div>
+                <div class="form-group">
+                  <label>Last Name</label>
+                  <input type="text" id="pf-lname" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Age</label>
+                  <input type="number" id="pf-age" min="10" max="120" placeholder="25" />
+                </div>
+                <div class="form-group">
+                  <label>Gender</label>
+                  <select id="pf-gender">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Height (cm)</label>
+                  <input type="number" id="pf-height" placeholder="170" />
+                </div>
+                <div class="form-group">
+                  <label>Weight (kg)</label>
+                  <input type="number" id="pf-weight" placeholder="70" step="0.1" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label><i class="fa-solid fa-bullseye"></i> Health Goal</label>
+                <select id="pf-goal">
+                  <option value="weight-loss">🔥 Weight Loss</option>
+                  <option value="muscle-gain">💪 Muscle Gain</option>
+                  <option value="maintenance">⚖️ Maintenance</option>
+                  <option value="endurance">🏃 Endurance</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label><i class="fa-solid fa-salad"></i> Dietary Preference</label>
+                <div class="diet-chips" id="diet-chips">
+                  <button type="button" class="chip" data-diet="omnivore" onclick="toggleDiet(this)">Omnivore</button>
+                  <button type="button" class="chip" data-diet="vegetarian" onclick="toggleDiet(this)">Vegetarian</button>
+                  <button type="button" class="chip" data-diet="vegan" onclick="toggleDiet(this)">Vegan</button>
+                  <button type="button" class="chip" data-diet="keto" onclick="toggleDiet(this)">Keto</button>
+                  <button type="button" class="chip" data-diet="gluten-free" onclick="toggleDiet(this)">Gluten-Free</button>
+                  <button type="button" class="chip" data-diet="paleo" onclick="toggleDiet(this)">Paleo</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label><i class="fa-solid fa-person-running"></i> Activity Level</label>
+                <select id="pf-activity">
+                  <option value="sedentary">Sedentary (desk job)</option>
+                  <option value="light">Lightly Active (1-3x/week)</option>
+                  <option value="moderate" selected>Moderately Active (3-5x/week)</option>
+                  <option value="active">Very Active (6-7x/week)</option>
+                  <option value="athlete">Athlete (2x/day)</option>
+                </select>
+              </div>
+              <button type="submit" class="btn-primary">
+                <i class="fa-solid fa-save"></i> Save Changes
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════ ADMIN ════════════ -->
+    <section class="page" id="page-admin">
+      <div class="admin-stats-row" id="admin-stats"></div>
+      <div class="admin-grid">
+        <div class="card">
+          <h3 class="card-title"><i class="fa-solid fa-users"></i> Registered Users</h3>
+          <table class="admin-table" id="admin-user-table">
+            <thead>
+              <tr>
+                <th>Name</th><th>Email</th><th>Goal</th><th>Joined</th><th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-user-tbody"></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <h3 class="card-title"><i class="fa-solid fa-chart-bar"></i> App Usage Stats</h3>
+          <canvas id="adminUsageChart" height="220"></canvas>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ══════════════════ FOOD LOG MODAL ══════════════════ -->
+<div class="modal-overlay hidden" id="food-modal-overlay" onclick="closeFoodModal(event)">
+  <div class="modal" id="food-modal">
+    <div class="modal-header">
+      <h3><i class="fa-solid fa-plus-circle"></i> Log Food</h3>
+      <button class="modal-close" onclick="closeFoodModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="search-food-wrap">
+        <input type="text" id="food-search" placeholder="Search food (e.g. Banana, Chicken...)" oninput="searchFood(this.value)" />
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+      </div>
+      <div class="food-search-results" id="food-search-results"></div>
+      <div class="selected-food" id="selected-food-panel" style="display:none">
+        <h4 id="selected-food-name">—</h4>
+        <div class="food-nutrients" id="selected-food-nutrients"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Portion (g)</label>
+            <input type="number" id="food-qty" value="100" min="1" max="2000" oninput="updateFoodCalc()" />
+          </div>
+          <div class="form-group">
+            <label>Meal Type</label>
+            <select id="food-meal-type">
+              <option value="breakfast">Breakfast</option>
+              <option value="lunch">Lunch</option>
+              <option value="dinner">Dinner</option>
+              <option value="snack">Snack</option>
+            </select>
+          </div>
+        </div>
+        <div class="food-calc-total" id="food-calc-total"></div>
+        <button class="btn-primary btn-full" onclick="addFoodToLog()">
+          <i class="fa-solid fa-check"></i> Add to Log
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ POST MODAL ══════════════════ -->
+<div class="modal-overlay hidden" id="post-modal-overlay" onclick="closePostModal(event)">
+  <div class="modal" id="post-modal">
+    <div class="modal-header">
+      <h3><i class="fa-solid fa-paper-plane"></i> Share Your Plan</h3>
+      <button class="modal-close" onclick="closePostModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <form onsubmit="submitPost(event)">
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" id="post-title" placeholder="My 7-day keto meal plan..." required />
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="post-body" rows="4" placeholder="Share your meal plan, tips, or recipes..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Tags (comma separated)</label>
+          <input type="text" id="post-tags" placeholder="keto, high-protein, meal-prep" />
+        </div>
+        <button type="submit" class="btn-primary btn-full">
+          <i class="fa-solid fa-paper-plane"></i> Share with Community
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
