@@ -2877,6 +2877,27 @@
       "folder": "Projects/YouTube%20Homepage%20Clone",
       "thumbnail": null,
       "addedAt": "2026-06-09T09:36:39.361Z"
+    },
+    {
+      "slug": "Student Productivity Ecosystem",
+      "title": "Student Productivity Ecosystem",
+      "description": "A premium, unified hub to manage study schedules, goals, assignments, focus metrics, and well-being with gamification, simulated LMS integration, and an AI study assistant.",
+      "author": {
+        "name": "MistryVishwa",
+        "github": "MistryVishwa"
+      },
+      "tags": [
+        "productivity",
+        "dashboard",
+        "gamification",
+        "learning",
+        "wellbeing",
+        "academic"
+      ],
+      "entry": "Projects/Student%20Productivity%20Ecosystem/index.html",
+      "folder": "Projects/Student%20Productivity%20Ecosystem",
+      "thumbnail": null,
+      "addedAt": "2026-06-09T16:12:01.000Z"
     }
   ]
 }

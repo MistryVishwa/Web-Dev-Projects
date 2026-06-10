@@ -1,0 +1,18 @@
+{
+  "title": "Student Productivity Ecosystem",
+  "description": "A premium, unified hub to manage study schedules, goals, assignments, focus metrics, and well-being with gamification, simulated LMS integration, and an AI study assistant.",
+  "author": {
+    "name": "MistryVishwa",
+    "github": "MistryVishwa"
+  },
+  "tags": [
+    "productivity",
+    "dashboard",
+    "gamification",
+    "learning",
+    "wellbeing",
+    "academic"
+  ],
+  "entry": "index.html",
+  "thumbnail": null
+}

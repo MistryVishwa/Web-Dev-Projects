@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aura Study | Student Productivity Ecosystem</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Local Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-dark">
+  <div class="app-layout">
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="logo-circle">
+          <i data-lucide="sparkles"></i>
+        </div>
+        <div>
+          <h2>Aura Study</h2>
+          <span>Productivity Ecosystem</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-tab="dashboard">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-item" data-tab="goals">
+          <i data-lucide="target"></i>
+          <span>Goals & Milestones</span>
+        </button>
+        <button class="nav-item" data-tab="schedule">
+          <i data-lucide="calendar"></i>
+          <span>Study Scheduler</span>
+        </button>
+        <button class="nav-item" data-tab="assignments">
+          <i data-lucide="clipboard-list"></i>
+          <span>Assignments Tracker</span>
+        </button>
+        <button class="nav-item" data-tab="wellbeing">
+          <i data-lucide="heart-pulse"></i>
+          <span>Well-being Hub</span>
+        </button>
+        <button class="nav-item" data-tab="simulators">
+          <i data-lucide="cpu"></i>
+          <span>LMS & AI Assistant</span>
+        </button>
+        <button class="nav-item" data-tab="library">
+          <i data-lucide="book-open"></i>
+          <span>Resource Library</span>
+        </button>
+      </nav>
+
+      <!-- User XP & Level Card -->
+      <div class="sidebar-footer">
+        <div class="gamification-card">
+          <div class="card-header">
+            <span>Aura Level 3</span>
+            <span class="xp-badge" id="xp-text">750 XP</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="xp-bar" style="width: 75%;"></div>
+          </div>
+          <p class="gamify-status"><i data-lucide="award"></i> <span id="rank-name">Elite Scholar</span></p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN VIEWPORT -->
+    <main class="main-content">
+      <!-- HEADER -->
+      <header class="app-header">
+        <div class="header-left">
+          <h1 id="view-title">Dashboard Overview</h1>
+          <p id="view-subtitle">Track your focus stats, active habits, and recent achievements.</p>
+        </div>
+        <div class="header-right">
+          <button class="header-action" id="theme-toggle" title="Toggle Theme">
+            <i data-lucide="sun"></i>
+          </button>
+          <div class="header-streak-badge" title="Daily Streak">
+            <i data-lucide="flame"></i>
+            <span id="streak-count">5 Days</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- SCROLLABLE CONTENT INNER -->
+      <div class="content-body">
+        
+        <!-- ================= DASHBOARD TAB ================= -->
+        <div class="tab-pane active" id="tab-dashboard">
+          <div class="metrics-grid">
+            <div class="metric-card gradient-purple">
+              <div class="metric-icon"><i data-lucide="hourglass"></i></div>
+              <div class="metric-data">
+                <h3 id="stat-focus-hours">14.5 hrs</h3>
+                <span>Study Focus This Week</span>
+              </div>
+            </div>
+            <div class="metric-card gradient-orange">
+              <div class="metric-icon"><i data-lucide="check-square"></i></div>
+              <div class="metric-data">
+                <h3 id="stat-tasks">8 / 12</h3>
+                <span>Assignments Finished</span>
+              </div>
+            </div>
+            <div class="metric-card gradient-green">
+              <div class="metric-icon"><i data-lucide="trophy"></i></div>
+              <div class="metric-data">
+                <h3 id="stat-badges">6 Unlocked</h3>
+                <span>Academic Badges</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-sections-grid">
+            <!-- Focus statistics SVG Chart -->
+            <div class="glass-panel col-span-2">
+              <div class="panel-header">
+                <h3>Weekly Productivity Trend</h3>
+                <p>Recorded focus hours per day</p>
+              </div>
+              <div class="chart-container">
+                <svg id="weekly-chart" viewBox="0 0 600 240" class="focus-svg-chart">
+                  <!-- Axes -->
+                  <line x1="50" y1="200" x2="560" y2="200" stroke="var(--border)" stroke-width="1.5" />
+                  <line x1="50" y1="30" x2="50" y2="200" stroke="var(--border)" stroke-width="1.5" />
+                  <!-- Horizontal grid lines -->
+                  <line x1="50" y1="140" x2="560" y2="140" stroke="var(--border)" stroke-width="1" stroke-dasharray="4" opacity="0.3" />
+                  <line x1="50" y1="80" x2="560" y2="80" stroke="var(--border)" stroke-width="1" stroke-dasharray="4" opacity="0.3" />
+                  <!-- Chart bars will be updated dynamically via script -->
+                  <g id="chart-bars"></g>
+                  <!-- Labels -->
+                  <g id="chart-labels"></g>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Gamification / Badge case -->
+            <div class="glass-panel">
+              <div class="panel-header">
+                <h3>Academic Badges</h3>
+                <p>Rewards & XP Milestones</p>
+              </div>
+              <div class="badges-grid" id="badges-container">
+                <!-- Injected dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= GOALS TAB ================= -->
+        <div class="tab-pane" id="tab-goals">
+          <div class="goals-layout">
+            <div class="goals-list-column">
+              <div class="glass-panel">
+                <div class="panel-header-action">
+                  <h3>Active Learning Goals</h3>
+                  <button class="btn btn-primary btn-sm" id="btn-add-goal">
+                    <i data-lucide="plus"></i> Add Goal
+                  </button>
+                </div>
+                <div class="goals-stack" id="goals-list">
+                  <!-- Dynamic Goals Injected Here -->
+                </div>
+              </div>
+            </div>
+
+            <div class="goals-stats-column">
+              <div class="glass-panel centered-panel">
+                <h3>Goal Completion Tracker</h3>
+                <div class="progress-donut-wrapper">
+                  <svg class="donut-chart" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="40" class="donut-bg" />
+                    <circle cx="50" cy="50" r="40" class="donut-fill" id="goal-donut-fill" />
+                  </svg>
+                  <div class="donut-overlay">
+                    <h2 id="goal-percent-text">0%</h2>
+                    <span>Done</span>
+                  </div>
+                </div>
+                <div class="goals-metrics-summary">
+                  <div class="sum-box">
+                    <span class="num text-purple" id="sum-total-goals">0</span>
+                    <span>Total Goals</span>
+                  </div>
+                  <div class="sum-box">
+                    <span class="num text-green" id="sum-completed-goals">0</span>
+                    <span>Completed</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= STUDY SCHEDULER TAB ================= -->
+        <div class="tab-pane" id="tab-schedule">
+          <div class="schedule-layout">
+            <div class="schedule-form-column">
+              <div class="glass-panel">
+                <h3>Schedule New Session</h3>
+                <form id="schedule-form" class="ecosystem-form">
+                  <div class="form-group">
+                    <label for="sch-title">Session Title</label>
+                    <input type="text" id="sch-title" placeholder="e.g. Physics Revison" required>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="sch-day">Day of Week</label>
+                      <select id="sch-day">
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="sch-type">Category</label>
+                      <select id="sch-type">
+                        <option value="revision">Revision</option>
+                        <option value="exam">Exam Prep</option>
+                        <option value="homework">Homework</option>
+                        <option value="lab">Lab Work</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="sch-time">Start Time</label>
+                      <input type="time" id="sch-time" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="sch-duration">Duration (mins)</label>
+                      <input type="number" id="sch-duration" value="60" min="15" step="15">
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary w-full">Save Session</button>
+                </form>
+              </div>
+            </div>
+
+            <div class="schedule-calendar-column">
+              <div class="glass-panel">
+                <h3>Your Weekly Schedule</h3>
+                <div class="schedule-weekly-list" id="schedule-weekly-list">
+                  <!-- Scheduled items grouped by day injected here -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= ASSIGNMENTS TAB ================= -->
+        <div class="tab-pane" id="tab-assignments">
+          <div class="assignments-header-row">
+            <div class="search-wrap">
+              <i data-lucide="search"></i>
+              <input type="text" id="assign-search" placeholder="Search assignments...">
+            </div>
+            <button class="btn btn-primary" id="btn-add-assignment">
+              <i data-lucide="plus"></i> Add Assignment
+            </button>
+          </div>
+
+          <div class="kanban-board">
+            <div class="kanban-column" data-status="todo">
+              <div class="column-header border-orange">
+                <h4>To Do</h4>
+                <span class="count-badge" id="count-todo">0</span>
+              </div>
+              <div class="kanban-cards" id="list-todo"></div>
+            </div>
+            <div class="kanban-column" data-status="progress">
+              <div class="column-header border-purple">
+                <h4>In Progress</h4>
+                <span class="count-badge" id="count-progress">0</span>
+              </div>
+              <div class="kanban-cards" id="list-progress"></div>
+            </div>
+            <div class="kanban-column" data-status="completed">
+              <div class="column-header border-green">
+                <h4>Completed / Submitted</h4>
+                <span class="count-badge" id="count-completed">0</span>
+              </div>
+              <div class="kanban-cards" id="list-completed"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= WELL-BEING TAB ================= -->
+        <div class="tab-pane" id="tab-wellbeing">
+          <div class="wellbeing-grid">
+            <!-- Breathing Exercise Panel -->
+            <div class="glass-panel centered-panel stress-breather-panel">
+              <h3>Stress Reliever & Breathing Pacer</h3>
+              <p>Follow the bubble to align your breathing and reduce stress levels.</p>
+              
+              <div class="breath-bubble-outer">
+                <div class="breath-bubble" id="breath-bubble"></div>
+                <div class="breath-state-text" id="breath-status">Breath In</div>
+              </div>
+
+              <div class="breath-controls">
+                <button class="btn btn-primary" id="btn-start-breath">Start Session</button>
+              </div>
+            </div>
+
+            <!-- Ambient Sound Mixer -->
+            <div class="glass-panel ambient-sounds-panel">
+              <h3>Focus White Noise Mixer</h3>
+              <p>Customize your focus background noise levels.</p>
+              
+              <div class="ambient-mixer-list">
+                <div class="mixer-row">
+                  <div class="mixer-info">
+                    <i data-lucide="cloud-rain"></i>
+                    <span>Rain Sound</span>
+                  </div>
+                  <input type="range" class="sound-slider" id="vol-rain" min="0" max="100" value="0">
+                </div>
+                <div class="mixer-row">
+                  <div class="mixer-info">
+                    <i data-lucide="wind"></i>
+                    <span>Forest Wind</span>
+                  </div>
+                  <input type="range" class="sound-slider" id="vol-wind" min="0" max="100" value="0">
+                </div>
+                <div class="mixer-row">
+                  <div class="mixer-info">
+                    <i data-lucide="flame"></i>
+                    <span>Campfire Crackle</span>
+                  </div>
+                  <input type="range" class="sound-slider" id="vol-fire" min="0" max="100" value="0">
+                </div>
+                <div class="mixer-row">
+                  <div class="mixer-info">
+                    <i data-lucide="coffee"></i>
+                    <span>Cafeteria Ambience</span>
+                  </div>
+                  <input type="range" class="sound-slider" id="vol-cafe" min="0" max="100" value="0">
+                </div>
+              </div>
+
+              <div class="mixer-actions">
+                <button class="btn btn-secondary" id="btn-stop-all-sounds">Mute All Sounds</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= SIMULATORS & AI ASSISTANT TAB ================= -->
+        <div class="tab-pane" id="tab-simulators">
+          <div class="simulators-layout">
+            <!-- LMS integration sim -->
+            <div class="glass-panel lms-panel">
+              <div class="lms-header">
+                <h3>LMS Integration Simulator</h3>
+                <span class="lms-badge" id="lms-status">Not Connected</span>
+              </div>
+              <p>Simulate fetching syllabus modules, grades, and schedules directly from Canvas or Blackboard.</p>
+              
+              <div class="lms-sync-box" id="lms-sync-area">
+                <button class="btn btn-secondary w-full" id="btn-sync-lms">
+                  <i data-lucide="refresh-cw"></i> Synchronize Blackboard & Canvas
+                </button>
+              </div>
+
+              <div class="lms-injected-data" id="lms-data" style="display: none;">
+                <h4>Synchronized Courses</h4>
+                <ul class="lms-courses-list">
+                  <li>
+                    <span class="course-name">Physics 201 (Electromagnetism)</span>
+                    <span class="grade text-green">Grade: A (94.2%)</span>
+                  </li>
+                  <li>
+                    <span class="course-name">CS 310 (Algorithms & Complexity)</span>
+                    <span class="grade text-purple">Grade: B+ (88.7%)</span>
+                  </li>
+                  <li>
+                    <span class="course-name">Math 240 (Linear Algebra)</span>
+                    <span class="grade text-green">Grade: A- (91.0%)</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- AI Study Assistant Chat -->
+            <div class="glass-panel ai-assistant-panel">
+              <h3>AI-Powered Study Assistant</h3>
+              <p>Ask study advice, schedule optimizations, or check learning recommendations.</p>
+              
+              <div class="chat-viewport" id="chat-messages">
+                <div class="chat-bubble ai">
+                  <p>Hi! I am Aura, your virtual study assistant. Tell me what subject you are preparing for, and I will recommend a dynamic study path!</p>
+                </div>
+              </div>
+
+              <div class="chat-input-row">
+                <input type="text" id="chat-input" placeholder="Ask Aura study tips, revision advice...">
+                <button class="btn btn-primary" id="btn-send-chat">
+                  <i data-lucide="send"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= RESOURCE LIBRARY TAB ================= -->
+        <div class="tab-pane" id="tab-library">
+          <div class="library-header">
+            <div class="filter-tabs" id="library-tags">
+              <button class="filter-tab active" data-tag="all">All Resources</button>
+              <button class="filter-tab" data-tag="guide">Guides</button>
+              <button class="filter-tab" data-tag="math">Mathematics</button>
+              <button class="filter-tab" data-tag="cs">Computer Science</button>
+              <button class="filter-tab" data-tag="productivity">Productivity</button>
+            </div>
+            <button class="btn btn-primary" id="btn-add-resource">
+              <i data-lucide="plus"></i> Bookmark Resource
+            </button>
+          </div>
+
+          <div class="library-grid" id="library-grid">
+            <!-- Dynamic resource cards injected here -->
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- MODAL: ADD GOAL -->
+    <div class="modal-overlay" id="modal-goal">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3>Create Learning Goal</h3>
+          <button class="modal-close" data-close="modal-goal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="goal-title">Goal Title</label>
+            <input type="text" id="goal-title" placeholder="e.g. Master Linear Algebra" required>
+          </div>
+          <div class="form-group">
+            <label for="goal-milestones">Milestones (comma-separated)</label>
+            <input type="text" id="goal-milestones" placeholder="e.g. Matrices, Vector Spaces, Eigenvalues">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-close="modal-goal">Cancel</button>
+          <button class="btn btn-primary" id="btn-save-goal">Create Goal</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: ADD ASSIGNMENT -->
+    <div class="modal-overlay" id="modal-assignment">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3>Add Assignment</h3>
+          <button class="modal-close" data-close="modal-assignment">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="assign-title">Assignment Title</label>
+            <input type="text" id="assign-title" placeholder="e.g. Algorithms Problem Set 2" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="assign-subject">Subject</label>
+              <input type="text" id="assign-subject" placeholder="e.g. Computer Science" required>
+            </div>
+            <div class="form-group">
+              <label for="assign-due">Due Date</label>
+              <input type="date" id="assign-due" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-close="modal-assignment">Cancel</button>
+          <button class="btn btn-primary" id="btn-save-assignment">Save Task</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: ADD RESOURCE -->
+    <div class="modal-overlay" id="modal-resource">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3>Bookmark Study Resource</h3>
+          <button class="modal-close" data-close="modal-resource">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="res-title">Resource Title</label>
+            <input type="text" id="res-title" placeholder="e.g. Kahn Academy Linear Algebra" required>
+          </div>
+          <div class="form-group">
+            <label for="res-link">URL / Reference Link</label>
+            <input type="text" id="res-link" placeholder="e.g. https://khanacademy.org/math..." required>
+          </div>
+          <div class="form-group">
+            <label for="res-tag">Resource Topic Tag</label>
+            <select id="res-tag">
+              <option value="guide">Guide / Tutorial</option>
+              <option value="math">Mathematics</option>
+              <option value="cs">Computer Science</option>
+              <option value="productivity">Productivity Tip</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-close="modal-resource">Cancel</button>
+          <button class="btn btn-primary" id="btn-save-resource">Save Bookmark</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Local Script -->
+  <script src="script.js"></script>
+</body>
+</html>
